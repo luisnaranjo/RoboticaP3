@@ -16,8 +16,13 @@ void main(void){
    enable_interrupts(GLOBAL);       // Permiso Global de interrupciones.
    
    while(1){            
-      adcPwmEnhanced(52.0); //52 es el valor de CCPRxL:CCPxCON<5:4> cuando el "duty" esta al 100%.      
-      serialNotification();  
+      adcPwmEnhanced(52.0); //52 es el valor de CCPRxL:CCPxCON<5:4> cuando el "duty" esta al 100%.
+      
+      //Si hay algo que notificar entonces se realiza por medio de una comunicacion serial.
+      if(notification){
+         notification=false;     //Se desactiva la notificacion serial.
+         serialNotification();   
+      }
             
       //Si el enlace esta bloqueado da vuelta, sino camina hacia adelante.            
       if(really_blocked){
@@ -29,8 +34,7 @@ void main(void){
       //Calculo para la distancia recorrida y velocidad (odometro).
       if(sec_odom){
          sec_odom=false;
-//!         odometer(4, 2, 0.01);         
-            odometer(2, 0.01);         
+         odometer(2, 0.01);         
       }
       
    }  //</while>

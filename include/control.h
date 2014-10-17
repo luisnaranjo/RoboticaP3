@@ -63,9 +63,9 @@ int32 hundred_ms=0;     //Variable contadora que incrementara cada 100ms siempre
 int8  timer_overflow=1; //Variable contadora para indicar que han pasado 100ms. 
                         
 //ODOMETRO:
-float distance=0;       //Variable que contendra el valor de distancia.
-int8 odom_cont=0;       //Variable donde se almacena la cantidad de cambio de estados.
-int32 hundred_ms_odom=0;
-int8 timer_overflow_odom=0;
-short sec_odom=false;        //Bandera para entrar a la funcion odometer.
-float vel=0;            //Variable que contendra el valor de la velocidad.
+float distance=0;             //Variable que contendra el valor de distancia.
+int8 odom_cont=0;             //Variable donde se almacena la cantidad de cambio de estados.
+int32 hundred_ms_odom=0;      //Variable contadora que incrementara cada 100ms.
+int8 timer_overflow_odom=0;   //Variable contadora para indicar que han pasado 100ms.
+short sec_odom=false;         //Bandera para entrar a la funcion odometer.
+float vel=0;                  //Variable que contendra el valor de la velocidad.

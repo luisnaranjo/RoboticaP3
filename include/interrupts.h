@@ -1,6 +1,7 @@
 #int_timer0
 void isr_tmr0(){
-//Rutina de interrupcion la cual aumentara un contador cada vez que pasen 100ms (0.1s), siempre y cuando el enlace IR este bloqueado
+//Rutina de interrupcion la cual aumentara un contador cada vez que pasen 100ms (0.1s), siempre y cuando el enlace IR este bloqueado.
+//Rutina que calcula un tiempo de 1s para el calculo de la velocidad.
    if(ir_blocked){
       if(timer_overflow>=3){
          hundred_ms++;
@@ -9,8 +10,7 @@ void isr_tmr0(){
          if((hundred_ms>=BLOCKED_HMS)&&(!really_blocked)){
             really_blocked=true; 
             notification=true;   //Se activa la notificacion serial. 
-         }
-         
+         }         
          timer_overflow=1;
       }
       else{ timer_overflow++; }
@@ -19,7 +19,8 @@ void isr_tmr0(){
    //Calculo del segundo para el odometro.
    if(timer_overflow_odom>=3){
       hundred_ms_odom++;
-         
+  
+      //Si ha pasado un segundo entonces se activa la bandera para los calculos de distancia y velocidad.
       if(hundred_ms_odom>=SECOND){
          sec_odom=true;
          hundred_ms_odom=0;
@@ -58,6 +59,7 @@ void isr_rb(){
       
    
 }  //</isr_rb>
+
 
 #int_ext
 void isr_ext(){
