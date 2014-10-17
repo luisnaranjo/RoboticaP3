@@ -6,21 +6,19 @@ void serialNotification(){
    if(notification){
       notification=false;  //Se desactiva la notificacion serial.
       
-      if(is>1){
-         if(really_blocked){
-            output_high(STATUS_LED);   //LED indicador activo.
-            fprintf(SERIAL, "El enlace IR ha sido interrumpido.\n\r");
-         }
-         else{
-            seconds=(float)hundred_ms/10.00;
-            output_low(STATUS_LED); //LED indicador inactivo.
-            fprintf(SERIAL, "Enlace IR restablecido. \n\rConexión interrumpida por %4.2f segundos \n\r\n\r", seconds);
-            //Se reinician los contadores.
-            seconds=0;
-            hundred_ms=0;
-         }                          
+      if(really_blocked){
+         output_high(STATUS_LED);   //LED indicador activo.
+         fprintf(SERIAL, "El enlace IR ha sido interrumpido.\n\r");
       }
-      else{ is++; }
+      else{
+         seconds=(float)hundred_ms/10.00;
+         output_low(STATUS_LED); //LED indicador inactivo.
+         fprintf(SERIAL, "Enlace IR restablecido. \n\rConexión interrumpida por %4.2f segundos \n\r\n\r", seconds);                        
+         
+         //Se reinician los contadores.
+         seconds=0;
+//         hundred_ms=0;
+      }                                
    }   
 }  //</serialNotification>
 
@@ -137,17 +135,38 @@ void driverStop(){
 /* -------------------------------------------------------------------------------------------------------------------- */
 /*                                                        ODOMETRO                                                      */
 /* -------------------------------------------------------------------------------------------------------------------- */
-void odometer(int8 boundary, int8 wheel, float dist_per_hole){
+//!void odometer(int8 boundary, int8 wheel, float dist_per_hole){
+//!//Funcion que calcula la distancia recorrida en metros.
+//!//boundary:       Cantidad de cambios de estado para que la rueda de una vuelta completa.
+//!//wheel:          Cantidad de ruedas a calcular.
+//!//dist_per_hole:  Distancia que se tiene por cada cambio de estado [Valor en metros].
+//!
+//!   if(odom_cont>=boundary){
+//!      int8 aux=0; //Variable auxiliar donde se almacenara el valor de la variable odom_cont.
+//!      
+//!      aux=odom_cont;
+//!      odom_cont=0;
+//!      distance+=((float)aux/(float)wheel)*dist_per_hole;
+//!      vel=distance;
+//!      
+//!      fprintf(SERIAL, "Distancia recorrida: %4.2f metros.\n\r Velocidad:  %4.2f \n\r\n\r", distance, vel);
+//!   }
+//!}
+
+
+void odometer(int8 wheel, float dist_per_hole){
 //Funcion que calcula la distancia recorrida en metros.
 //boundary:       Cantidad de cambios de estado para que la rueda de una vuelta completa.
 //wheel:          Cantidad de ruedas a calcular.
 //dist_per_hole:  Distancia que se tiene por cada cambio de estado [Valor en metros].
-
-   if(odom_cont>=boundary){
       int8 aux=0; //Variable auxiliar donde se almacenara el valor de la variable odom_cont.
+      float distance_temp=0;
       
       aux=odom_cont;
       odom_cont=0;
       distance+=((float)aux/(float)wheel)*dist_per_hole;
-   }
+      distance_temp=((float)aux/(float)wheel)*dist_per_hole;
+      vel=distance_temp*3.6;
+      
+      fprintf(SERIAL, "Distancia recorrida: %4.2f metros.\n\r Velocidad:  %4.2f \n\r\n\r", distance, vel);  
 }

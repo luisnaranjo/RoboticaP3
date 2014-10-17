@@ -9,9 +9,10 @@ void main(void){
            
    if(input(IR_RECEIVER)){ fprintf(SERIAL, "Conexión no iniciada.\n\r\n\r"); }
    
-//   while(input(IR_RECEIVER));
+   while(input(IR_RECEIVER));
       
    fprintf(SERIAL, "Conexión iniciada.\n\r\n\r");         
+   RBIF=0;                          // Se limpia la bandera de interrupcion por cambio de estado de RB.
    enable_interrupts(GLOBAL);       // Permiso Global de interrupciones.
    
    while(1){            
@@ -25,8 +26,12 @@ void main(void){
       }
       else{ driverForward(); }
       
-      //Calculo para la distancia recorrida (odometro).
-      odometer(1, 1, 0.05);
+      //Calculo para la distancia recorrida y velocidad (odometro).
+      if(sec_odom){
+         sec_odom=false;
+//!         odometer(4, 2, 0.01);         
+            odometer(2, 0.01);         
+      }
       
    }  //</while>
    

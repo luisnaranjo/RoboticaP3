@@ -15,13 +15,17 @@
 /* -------------------------------------------------------------------------------------------------------------------- */
 /*                                           IDs Y CONSTANTES DE CONTROL                                                */
 /* -------------------------------------------------------------------------------------------------------------------- */
+//REGISTROS:
+#byte INTCON   =  0xFF2       // Registro de Control de Interrupcion.
+#bit  RBIF     =  INTCON.0    // Bandera de la interrupcion por cambio de estado.
+
 //TRANSMISION SERIAL:
 #define SERIAL_TX    PIN_C6   // Pin transmisor serial.
 #define SERIAL_RX    PIN_C7   // Pin receptor serial.
 
 //INFRA-ROJO:
 #define IR_RECEIVER  PIN_B4   // Pin donde se conecta el receptor IR.
-#define STATUS_LED   PIN_B1   // Pin indicador de estado de conexion IR.
+#define STATUS_LED   PIN_B3   // Pin indicador de estado de conexion IR.
 #define BLOCKED_HMS  5        // Indica cuantos cientos de milisegundos el enlace tiene que estar bloqueado para que se considere que se pierde la conexion.
 
 //MANEJO DE RUEDAS:
@@ -34,8 +38,9 @@
 #define STBY      PIN_D6   // Pin para el manejo del Standby del Driver.
 
 //ODOMETRO:
-#define DISTANCE_LW  PIN_B5   //Pin por donde se analizaran los cambios de estado respecto a la rueda izquierda para el calculo de la distancia.
-#define DISTANCE_RW  PIN_B6   //Pin por donde se analizaran los cambios de estado respecto a la rueda derecha para el calculo de la distancia.
+#define DISTANCE_LW  PIN_B0   //Pin por donde se analizaran los cambios de estado respecto a la rueda izquierda para el calculo de la distancia.
+#define DISTANCE_RW  PIN_B1   //Pin por donde se analizaran los cambios de estado respecto a la rueda derecha para el calculo de la distancia.
+#define SECOND       10       //Valor de 1 segundo en cientos de milisegundos.
 
 
 /* -------------------------------------------------------------------------------------------------------------------- */
@@ -56,9 +61,11 @@ short notification=false;     //Bandera encargada de notificar si se ha terminad
 float seconds=0;        //Variable que indicara cuantos segundos el enlace fue interrumpido.
 int32 hundred_ms=0;     //Variable contadora que incrementara cada 100ms siempre y cuando el enlace este interrumpido.
 int8  timer_overflow=1; //Variable contadora para indicar que han pasado 100ms. 
-int8  is=0;             //Como el programa no se dejaba con las interrupciones :( y siempre reconocia 2 interrupciones al principio,
-                        //esta variable fue declarada con la funcion de contabilizar hasta 2 e ignorar esas dos interrupciones en el cambio de estado.
                         
 //ODOMETRO:
-float distance=0;       //Variable que contenndra el valor de distancia.
+float distance=0;       //Variable que contendra el valor de distancia.
 int8 odom_cont=0;       //Variable donde se almacena la cantidad de cambio de estados.
+int32 hundred_ms_odom=0;
+int8 timer_overflow_odom=0;
+short sec_odom=false;        //Bandera para entrar a la funcion odometer.
+float vel=0;            //Variable que contendra el valor de la velocidad.

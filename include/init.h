@@ -7,7 +7,7 @@ void init_config(){
            
    //Configuracion de TRISx.          
    set_tris_a(0x01); //0000 0001
-   set_tris_b(0xF0); //1111 0000
+   set_tris_b(0xF7); //1111 0111
    set_tris_c(0x80); //1000 0000
    set_tris_d(0x00); //0000 0000
    
@@ -40,12 +40,18 @@ void init_config(){
                                              //Se utiliza un preescaler de 1.
    set_timer1(64536);                        //Valor establecido en timer1 para una frecuencia de 4KHz.                 
    
+   //Configuracion para la interrupcion externa.
+   ext_int_edge(0,L_TO_H);                  //La interrupcion actua por medio de RB0 cuando hay un cambio de estado de LOW a HIGH.
+   ext_int_edge(1,L_TO_H);                  //La interrupcion actua por medio de RB1 cuando hay un cambio de estado de LOW a HIGH.
+   
       
    //Configuracion de interrupciones.
-   enable_interrupts(INT_RB);
+   enable_interrupts(INT_RB);       //Habilitación de la interrupcion por cambio de estado en RB4:7.
    enable_interrupts(INT_TIMER0);   //Habilitación de la interrupcion del timer0.
    enable_interrupts(INT_TIMER1);   //Habilitación de la interupcion del timer1.
-//   enable_interrupts(GLOBAL);       // Permiso Global de interrupciones
+   enable_interrupts(INT_EXT);      //Habilitacion de la interrupcion externa en RB0.
+   enable_interrupts(INT_EXT1);     //Habilitacion de la interrupcion externa en RB1.
+//   enable_interrupts(GLOBAL);       //Permiso global de interrupciones.
 
     
 }
@@ -56,8 +62,10 @@ DEFINICION DE PINES:
    |  PIN   |    TIPO   |                                          FUNCION                                           |                                  
    |--------|-----------|--------------------------------------------------------------------------------------------|
    |   A0   |  Entrada  |  Pin analogico donde se realiza la lectura del potenciometro.                              |
-   |   B0   |  Entrada  |  Pin donde se conectara el receptor infrarojo.                                             |
-   |   B1   |  Salida   |  Pin (LED) que sera el encargado de mostrar el estado de la conexion.                      |
+   |   B0   |  Entrada  |  Pin donde se conectara el optointerruptor de la rueda izquierda.                          |
+   |   B1   |  Entrada  |  Pin donde se conectara el optointerruptor de la rueda derecha.                          
+   |   B3   |  Salida   |  Pin (LED) que sera el encargado de mostrar el estado de la conexion.                      |
+   |   B4   |  Entrada  |  Pin donde se conectara el receptor infrarojo.                                             |
    |   C2   |  Salida   |  Pin donde se conectara el Diodo IR emisor                                                 |
    |   C6   |  Salida   |  Pin transmisor de la interfaz serial: SERIAL.                                             |
    |   C7   |  Entrada  |  Pin receptor de la interfaz serial: SERIAL.                                               |
@@ -70,9 +78,11 @@ DEFINICION DE PINES:
    |   D6   |  Salida   |  Pin de salida tipo STANDBY para el driver.                                                |
    
 NOTAS:
-   - Mejorar el problema con la interrupcion del cambio de estado en PORTB, limpiando la bandera de interrupcion.
-   - El sistema odometro esta configurado para una sola rueda. Si se implemementa para dos ruedas se tendrá que modificar el isr para la medicion de ambas
-     ruedas. Ademas de indicarle lo mismo a la funcion odometer por medio de sus parametros [en main].
+   - Cambiar los estados del receptor. Se considerará bloqueado el camino cuando encuentre la portadora. Desbloqueado cuando no se encuentre la portadora.
+      * Cambiar en la interrupcion de cambio de estado en PORTB.
+      * Cambiar al principio del main.
+   - El sistema odometro esta configurado para dos ruedas. Si se cambiara la contabilizacion a una sola rueda, se tendria que desactivar una de las 
+     interrupciones externas (INT_EXT o INT_EXT1). Ademas de indicarle al metodo odometer que solo se contabilizara una rueda. [En MAIN].
    
 DUDAS:
    

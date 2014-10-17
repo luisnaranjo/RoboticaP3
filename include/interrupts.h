@@ -14,8 +14,22 @@ void isr_tmr0(){
          timer_overflow=1;
       }
       else{ timer_overflow++; }
-   }   
+   } 
+   
+   //Calculo del segundo para el odometro.
+   if(timer_overflow_odom>=3){
+      hundred_ms_odom++;
+         
+      if(hundred_ms_odom>=SECOND){
+         sec_odom=true;
+         hundred_ms_odom=0;
+      }
+      timer_overflow_odom=1;
+   }
+   else{ timer_overflow_odom++; }
+   
 }  //</isr_tmr0>
+ 
  
 #int_timer1
 void isr_tmr1(){
@@ -25,11 +39,11 @@ void isr_tmr1(){
    set_timer1(64536); 
 }  //</isr_tmr1>
 
+
 #int_rb
-void isr_ext(){
+void isr_rb(){
 // Rutina de interrupcion la cual se ejecutara cada vez que cambie de estado el PIN RB4[IR] o RB5,RB6[ODOMETRO].
 // Verifica si se ha bloqueado o desbloqueado la señal.
-//Contabiliza los cambios de estado para el odometro.
      
    //Si se ha bloqueado el enlace entonces se activa la bandera. 
    if(input(IR_RECEIVER)){ 
@@ -41,8 +55,21 @@ void isr_ext(){
       ir_blocked=false;
       really_blocked=false;
    }
+      
    
-   //Odometro:
-   if((input(DISTANCE_LW))&&(!really_blocked))
+}  //</isr_rb>
+
+#int_ext
+void isr_ext(){
+// Rutina de interrupcion que contabiliza los cambios de estado en la rueda izquierda para el odometro.
+   if(!really_blocked)
       odom_cont++;
-}  //<isr_ext>
+}  //</isr_ext>
+
+
+#int_ext1
+void isr_ext1(){
+// Rutina de interrupcion que contabiliza los cambios de estado en la rueda derecha para el odometro.
+   if(!really_blocked)
+      odom_cont++;
+}  //</isr_ext>
